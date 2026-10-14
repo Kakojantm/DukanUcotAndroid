@@ -32,9 +32,12 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Accept Android SDK licenses
+        run: |
+          yes | sdkmanager --sdk_root="${ANDROID_HOME}" --licenses || true
+
       - name: Install Android SDK components
         run: |
-          sdkmanager --sdk_root="${ANDROID_HOME}" --licenses
           sdkmanager --sdk_root="${ANDROID_HOME}" \
             "platform-tools" \
             "platforms;android-35" \
@@ -43,7 +46,7 @@ jobs:
       - name: Check project ZIP
         run: |
           test -f DukanUcotAndroid_Project.zip
-          unzip -l DukanUcotAndroid_Project.zip
+          unzip -t DukanUcotAndroid_Project.zip
 
       - name: Extract Android project
         run: |

@@ -1,4 +1,6 @@
+
 name: Build Dukan Ucot APK
+
 on:
   workflow_dispatch:
   push:
@@ -29,16 +31,15 @@ jobs:
         with:
           gradle-version: "8.7"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Accept Android SDK licenses
+      - name: Configure Android SDK
         run: |
-          yes | sdkmanager --sdk_root="${ANDROID_HOME}" --licenses || true
+          echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> "$GITHUB_ENV"
+          echo "/usr/local/lib/android/sdk/platform-tools" >> "$GITHUB_PATH"
+          yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
       - name: Install Android SDK components
         run: |
-          sdkmanager --sdk_root="${ANDROID_HOME}" \
+          sdkmanager --sdk_root="$ANDROID_HOME" \
             "platform-tools" \
             "platforms;android-35" \
             "build-tools;35.0.0"
@@ -72,4 +73,3 @@ jobs:
           path: source/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 7
-          

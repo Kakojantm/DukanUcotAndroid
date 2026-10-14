@@ -1,19 +1,24 @@
-
 name: Build Dukan Ucot APK
-
 on:
   workflow_dispatch:
   push:
-    branches: [main, master]
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: read
 
 jobs:
   build:
+    name: Build Android APK
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -27,18 +32,41 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Extract project
+      - name: Install Android SDK components
         run: |
-          unzip DukanUcotAndroid_Project.zip -d source
+          sdkmanager --sdk_root="${ANDROID_HOME}" --licenses
+          sdkmanager --sdk_root="${ANDROID_HOME}" \
+            "platform-tools" \
+            "platforms;android-35" \
+            "build-tools;35.0.0"
 
-      - name: Build APK
+      - name: Check project ZIP
+        run: |
+          test -f DukanUcotAndroid_Project.zip
+          unzip -l DukanUcotAndroid_Project.zip
+
+      - name: Extract Android project
+        run: |
+          mkdir -p source
+          unzip -o DukanUcotAndroid_Project.zip -d source
+          test -f source/settings.gradle
+          test -f source/app/build.gradle
+          test -f source/app/src/main/AndroidManifest.xml
+
+      - name: Build debug APK
         working-directory: source
         run: gradle --no-daemon assembleDebug
 
-      - name: Save APK
+      - name: Verify APK
+        run: |
+          test -f source/app/build/outputs/apk/debug/app-debug.apk
+          ls -lh source/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Dukan-Ucot-APK
           path: source/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+          retention-days: 7
           

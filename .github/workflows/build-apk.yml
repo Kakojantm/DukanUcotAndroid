@@ -54,8 +54,8 @@ jobs:
 
       - name: Check project ZIP
         run: |
-          test -f DukanUcotAndroid_Project.zip
-          unzip -t DukanUcotAndroid_Project.zip
+          test -f DukanUcotAndroid_ExportFix_v2.zip
+          unzip -t DukanUcotAndroid_ExportFix_v2.zip
 
       - name: Extract Android project
         run: |

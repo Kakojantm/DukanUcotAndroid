@@ -54,13 +54,13 @@ jobs:
 
       - name: Check project ZIP
         run: |
-          test -f DukanUcotAndroid_RestoreFix_v3-1.zip
-          unzip -t DukanUcotAndroid_RestoreFix_v3-1.zip
+          test -f DukanUcotAndroid_RestoreFix_v3.zip
+          unzip -t DukanUcotAndroid_RestoreFix_v3.zip
 
       - name: Extract Android project
         run: |
           mkdir -p source
-          unzip -o DukanUcotAndroid_RestoreFix_v3-1.zip -d source
+          unzip -o DukanUcotAndroid_RestoreFix_v3.zip -d source
           test -f source/settings.gradle
           test -f source/app/build.gradle
           test -f source/app/src/main/AndroidManifest.xml
